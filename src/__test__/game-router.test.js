@@ -92,16 +92,20 @@ describe('/api/games', () => {
           });
       });
   });
-  test('should give 200 if you delete a file correct', () => {
+  test('should give 204 if you delete a file correct', () => {
     return gameMock.pCreateGameMock()
       .then((deleteTarget) => {
         return superagent.delete(`${API_URL}/${deleteTarget.id}`)
           .then((deleteResponse) => {
-            expect(deleteResponse.status).toEqual(200);
+            expect(deleteResponse.status).toEqual(204);
           });
       });
   });
   test('should give 404 if you try to delete a file that doesn\'t exist', () => {
-    return
+    return superagent.delete(`${API_URL}/adfskljdskfjsdlkfkjldsfkljjk`)
+      .then(Promise.reject)
+      .catch((error) => {
+        expect(error.status).toEqual(404);
+      });
   });
 });

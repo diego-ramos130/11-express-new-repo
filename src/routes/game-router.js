@@ -47,7 +47,7 @@ router.delete('/api/games/:id', jsonParser, (request, response, next) => {
   return Game.findByIdAndRemove(request.params.id)
     .then(() => {
       logger.log(logger.INFO, `successfully deleted game by id of ${request.params.id}`);
-      return response.sendStatus(200);
+      return response.sendStatus(204);
     })
     .catch(() => {
       return next(new HttpError(404, 'game not found'));
