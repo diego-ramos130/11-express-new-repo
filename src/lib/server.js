@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const logger = require('./logger');
 const loggerMiddleware = require('./logger-middleware');
 const errorMiddleware = require('./error-middleware');
+const storeRoutes = require('../routes/store-router');
 const gameRoutes = require('../routes/game-router');
 
 const app = express();
@@ -15,6 +16,8 @@ app.use(cors());
 app.use(loggerMiddleware);
 
 app.use(gameRoutes);
+
+app.use(storeRoutes);
 
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from catch-all/default route (the route was not found');
