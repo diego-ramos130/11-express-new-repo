@@ -105,7 +105,7 @@ describe('/api/games', () => {
           });
       });
   });
-  test('should give 200 if you delete a file correct', () => {
+  test('should give 204 if you delete a file correct', () => {
     return storeMock.pCreateStoreMock()
       .then((storedStore) => {
         return gameMock.pCreateGameMock(storedStore.id)
@@ -115,6 +115,13 @@ describe('/api/games', () => {
                 expect(deleteResponse.status).toEqual(204);
               });
           });
+      });
+  });
+  test('should give a 400 if you try to delete a file that doesn\'t exist', () => {
+    return superagent.delete(`${API_URL}/aaaaahhhhh`)
+      .then(Promise.reject)
+      .catch((response) => {
+        expect(response.status).toEqual(400);
       });
   });
 });

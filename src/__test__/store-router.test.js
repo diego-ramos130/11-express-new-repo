@@ -55,4 +55,57 @@ describe('/api/stores', () => {
         throw error;
       });
   });
+  test('should give a 200 if you request to update a store with a correct id', () => {
+    return storeMock.pCreateStoreMock()
+      .then((putTarget) => {
+        return superagent.put(`${API_URL}/${putTarget.id}`)
+          .set('Content-Type', 'application/json')
+          .send({
+            type: 'Chris Wilsons Realistic Depiction of New Zealand',
+          })
+          .then((putResponse) => {
+            expect(putResponse.status).toEqual(200);
+            expect(putResponse.body._id).toEqual(putTarget.id);
+            expect(putResponse.body.type).toEqual('Chris Wilsons Realistic Depiction of New Zealand');
+          });
+      });
+  });
+  test('should give a 400 if you tried to update some store that didn\'t exist', () => {
+    return superagent.put(`${API_URL}/ahhhh`)
+      .then(Promise.reject)
+      .catch((response) => {
+        expect(response.status).toEqual(400);
+      });
+  });
+  test('should give 204 if you delete a store that exists', () => {
+    return storeMock.pCreateStoreMock()
+      .then((storedStore) => {
+        return superagent.delete(`${API_URL}/${storedStore.id}`)
+          .then((deleteResponse) => {
+            expect(deleteResponse.status).toEqual(204);
+          });
+      });
+  });
+  test('should give you a 400 if you try to delete a store that doesn\'t exist', () => {
+    return superagent.delete(`${API_URL}/kjahsdfklhjsdfh`)
+      .then(Promise.reject)
+      .catch((response) => {
+        expect(response.status).toEqual(400);
+      });
+  });
+  test('tests for why not: we can make a store with games in it.', () => {
+    return storeMock.pCreateStoreMock()
+      .then((store) => {
+        return gameMock.pCreateGameMock(store.id)
+          .then((getTarget) => {
+            return superagent.get(`http://localhost:${process.env.PORT}/api/games/${getTarget.id}`)
+              .then((getResponse) => {
+                expect(getResponse.status).toEqual(200);
+                expect(getResponse.body.game).toEqual(getTarget.game);
+                expect(getResponse.body.type).toEqual(getTarget.type);
+                expect(getResponse.body.store).toEqual(getTarget.store.toString());
+              });
+          });
+      });
+  });
 });
