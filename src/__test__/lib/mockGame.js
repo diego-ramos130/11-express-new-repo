@@ -5,10 +5,11 @@ const Game = require('../../model/game');
 
 const gameMock = module.exports = {};
 
-gameMock.pCreateGameMock = () => {
+gameMock.pCreateGameMock = (storeid) => {
   return new Game({
     game: faker.lorem.words(10),
     type: faker.lorem.words(10),
+    store: storeid,
   }).save();
 };
 
